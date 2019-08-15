@@ -53,7 +53,7 @@ func (s *timeWatchdogService) Whack() {
 
 // Check checks if the service Whack time has expired
 func (s *timeWatchdogService) Check() bool {
-	return time.Now().After(s.expireAt)
+	return time.Now().Before(s.expireAt)
 }
 
 // mapWatchdogSystem implements a system of managing watchdog services using a map
