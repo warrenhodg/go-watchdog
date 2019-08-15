@@ -64,7 +64,7 @@ type mapWatchdogSystem struct {
 }
 
 // MapWatchdogSystem returns a new watchdog system implemented using maps
-func MapWatchdogSystem() Watchdog {
+func MapWatchdogSystem() WatchdogSystem {
 	w := mapWatchdogSystem{
 		terminated: false,
 		mutex:      new(sync.Mutex),
@@ -83,7 +83,7 @@ func (w *mapWatchdogSystem) Add(s WatchdogService) {
 }
 
 // Remove removes a service from the list of services checked
-func (w *mapWatchdogSystem) Remove(s Service) {
+func (w *mapWatchdogSystem) Remove(s WatchdogService) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
