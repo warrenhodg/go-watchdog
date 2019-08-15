@@ -15,8 +15,8 @@ type WatchdogService interface {
 
 // WatchdogSystem allows one to watch a set of services
 type WatchdogSystem interface {
-	Add(s Service)
-	Remove(s Service)
+	Add(s WatchdogService)
+	Remove(s WatchdogService)
 	Check() error
 	Watch(period time.Duration) error
 	Terminate()
@@ -65,7 +65,7 @@ type mapWatchdogSystem struct {
 
 // MapWatchdogSystem returns a new watchdog system implemented using maps
 func MapWatchdogSystem() Watchdog {
-	w := timeWatchdog{
+	w := mapWatchdogSystem{
 		terminated: false,
 		mutex:      new(sync.Mutex),
 		services:   make(map[string]WatchdogService),
@@ -75,11 +75,11 @@ func MapWatchdogSystem() Watchdog {
 }
 
 // Add adds a service to the list of services checked
-func (w *mapWatchdogSystem) Add(s Service) {
+func (w *mapWatchdogSystem) Add(s WatchdogService) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
-	w.timeouts[s.Name()] = s
+	w.services[s.Name()] = s
 }
 
 // Remove removes a service from the list of services checked
@@ -87,7 +87,7 @@ func (w *mapWatchdogSystem) Remove(s Service) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
-	delete(w.timeouts, s.Name())
+	delete(w.services, s.Name())
 }
 
 // Check checks all services for faults
